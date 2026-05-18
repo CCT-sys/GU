@@ -1,0 +1,12 @@
+transformers
+pytorch-lightning==1.9.5
+pandas
+numpy
+nlp==0.4.0
+sentencepiece==0.1.94
+wandb
+nltk
+boto3
+rouge
+lm-eval
+torchmetrics==0.10.3
