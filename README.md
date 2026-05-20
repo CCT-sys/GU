@@ -1,6 +1,6 @@
 # Geometric Unlearning
 
-This directory focuses on **geometric unlearning** training and evaluation. It is built on PyTorch Lightningand performs “unlearning” on LLM. The core idea is to use **fuzzy anchor representations** (hidden states triggered by refusal responses) to localize tokens to forget, and apply corresponding unlearning/retaining constraints during training.
+This directory focuses on **geometric unlearning** training and evaluation. It is built on PyTorch Lightningand performs “unlearning” on LLM. The core idea is to distills a compact, low-rank safe-behavior subspace from a small set of safe reference prompts and uses lightweight anchor-in-context synthetic prompts to trigger localized, projection-based alignment of hidden representations to this safe subspace.
 
 ## Layout (geometric unlearning related)
 
