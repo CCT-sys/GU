@@ -85,3 +85,40 @@ The trainer will export HF weights to `hf_export_dir` after training (optionally
 
 The output model could use the OpenUnlearning to do all the evaluation
 
+## OpenUnlearning integration optional
+
+This method can also be integrated into the OpenUnlearning framework [1] for unified training and evaluation.
+
+To add this method to OpenUnlearning, the geometric unlearning logic should be implemented as a custom unlearning trainer, e.g., `GeometricUnlearnTrainer`, following OpenUnlearning's trainer interface. The trainer then needs to be registered in `TRAINER_REGISTRY` and exposed through a trainer config under `configs/trainer/`, where method-specific arguments such as `fuzzy_repr_path`, `target_layers`, `forget_window`, `w_dir`, `alpha_energy`, `w_retain_align`, `forget_end_step`, `forget_hit_boost`, and `forget_mask_decay` can be specified.
+
+The data side also needs to be registered explicitly. Since this project uses synthetic forget/retain data and entity-name files, a corresponding synthetic data handler should be added or adapted in OpenUnlearning's `src/data/` module, registered in `DATASET_REGISTRY`, and referenced from `configs/data/datasets/`. The handler should load the forget set, retain set, fuzzy entity names, retain names, and validation metadata in the format expected by the geometric unlearning trainer.
+
+A typical OpenUnlearning integration therefore requires:
+
+1. Add a custom trainer, for example:
+   - `src/trainer/unlearn/geometric_unlearn.py`
+   - class name: `GeometricUnlearnTrainer`
+
+2. Register the trainer:
+   - import the trainer in the trainer registry module
+   - call `_register_trainer(GeometricUnlearnTrainer)`
+
+3. Add a trainer config:
+   - `configs/trainer/GeometricUnlearn.yaml`
+   - include both HuggingFace `TrainingArguments` and geometric-unlearning-specific `method_args`
+
+4. Add or adapt a synthetic dataset handler:
+   - load forget/retain JSON data
+
+5. Register the synthetic dataset handler:
+   - call `_register_data(SyntheticGeometricUnlearnDataset)`
+
+6. Add dataset configs:
+   - define forget, retain, and validation paths under `configs/data/datasets/`
+
+7. Run training through OpenUnlearning's config system:
+   - select the custom trainer config
+   - select the synthetic geometric-unlearning dataset config
+   - point `fuzzy_repr_path` to the generated fuzzy anchor representation `.pt` file
+
+[1] Dorna V, Mekala A, Zhao W, et al. Openunlearning: Accelerating llm unlearning via unified benchmarking of methods and metrics[J]. Advances in Neural Information Processing Systems, 2026, 38.
