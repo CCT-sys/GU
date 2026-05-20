@@ -81,9 +81,6 @@ If you set:
 
 The trainer will export HF weights to `hf_export_dir` after training (optionally merging LoRA).
 
-## Evaluation & quick check
-
-The output model could use the OpenUnlearning to do all the evaluation
 
 ## OpenUnlearning integration optional
 
